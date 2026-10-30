@@ -1,0 +1,110 @@
+{
+  "sample_rate": 16000,
+  "conversation": {
+    "me": "conv_me.wav",
+    "them": "conv_them.wav",
+    "utterances": [
+      {
+        "speaker": "Me",
+        "start": 1.0,
+        "end": 6.488,
+        "text": "Hi everyone, thanks for joining. Let's start with the quarterly roadmap review.",
+        "voice": "Microsoft David Desktop",
+        "rate": 0
+      },
+      {
+        "speaker": "Them",
+        "start": 7.288,
+        "end": 11.872,
+        "text": "Thanks for setting this up. I reviewed the draft roadmap last night.",
+        "voice": "Microsoft Zira Desktop",
+        "rate": 0
+      },
+      {
+        "speaker": "Me",
+        "start": 12.472,
+        "end": 12.817,
+        "text": "Yeah.",
+        "voice": "Microsoft David Desktop",
+        "rate": 1
+      },
+      {
+        "speaker": "Them",
+        "start": 13.717,
+        "end": 17.74,
+        "text": "The design team needs about three more weeks to finish the onboarding flow.",
+        "voice": "Microsoft Zira Desktop",
+        "rate": -1
+      },
+      {
+        "speaker": "Me",
+        "start": 18.74,
+        "end": 21.932,
+        "text": "I think we should move the launch date to the second week of March.",
+        "voice": "Microsoft David Desktop",
+        "rate": 0
+      },
+      {
+        "speaker": "Them",
+        "start": 22.632,
+        "end": 24.116,
+        "text": "Sure, I can do that.",
+        "voice": "Microsoft Zira Desktop",
+        "rate": 1
+      },
+      {
+        "speaker": "Me",
+        "start": 24.916,
+        "end": 27.688,
+        "text": "Can you send me the updated budget numbers by Friday afternoon?",
+        "voice": "Microsoft David Desktop",
+        "rate": 2
+      },
+      {
+        "speaker": "Them",
+        "start": 28.788,
+        "end": 32.677,
+        "text": "One concern is that the analytics dashboard still has a few open bugs.",
+        "voice": "Microsoft Zira Desktop",
+        "rate": 0
+      },
+      {
+        "speaker": "Me",
+        "start": 33.277,
+        "end": 34.092,
+        "text": "Sounds good.",
+        "voice": "Microsoft David Desktop",
+        "rate": 0
+      },
+      {
+        "speaker": "Them",
+        "start": 34.992,
+        "end": 39.042,
+        "text": "We also need approval from legal before we publish the pricing page.",
+        "voice": "Microsoft Zira Desktop",
+        "rate": -1
+      },
+      {
+        "speaker": "Me",
+        "start": 40.242,
+        "end": 43.169,
+        "text": "Okay, let's circle back on the hiring plan next week.",
+        "voice": "Microsoft David Desktop",
+        "rate": 1
+      },
+      {
+        "speaker": "Them",
+        "start": 43.969,
+        "end": 46.226,
+        "text": "Great, talk to you all on Thursday.",
+        "voice": "Microsoft Zira Desktop",
+        "rate": 0
+      }
+    ]
+  },
+  "monologue": {
+    "file": "monologue.wav",
+    "text": "Let me walk through the numbers from last quarter in a bit more detail. Revenue grew by about twelve percent, mostly from the enterprise accounts. Churn went down slightly, although the smaller customers are still leaving faster than we would like. Support tickets were flat, which is good given how many new users we added. For next quarter, the plan is to focus on onboarding and the mobile app. I will share the full deck after this call so everyone can review it.",
+    "duration": 28.841
+  }
+}

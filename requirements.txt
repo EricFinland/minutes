@@ -1,0 +1,9 @@
+faster-whisper>=1.2.1
+numpy>=2.0
+onnxruntime>=1.17
+sounddevice>=0.5
+SoundCard>=0.4.6
+PyQt6>=6.6
+requests>=2.31
+pywin32>=306
+psutil>=5.9
