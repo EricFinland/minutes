@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import logging
 import os
+import subprocess
+import sys
 import threading
 import time
 from datetime import datetime
@@ -30,8 +32,17 @@ log = logging.getLogger(__name__)
 QWIDGETSIZE_MAX = 16777215
 
 
-def _is_windows_platform() -> bool:
-    return QGuiApplication.platformName() == "windows"
+def _is_native_platform() -> bool:
+    """False under Qt's offscreen platform (tests), where there is no real window."""
+    return QGuiApplication.platformName() in ("windows", "cocoa")
+
+
+def open_path(path) -> None:
+    """Open a file or folder with the system's default app."""
+    if sys.platform == "win32":
+        os.startfile(path)
+    else:
+        subprocess.Popen(["open" if sys.platform == "darwin" else "xdg-open", str(path)])
 
 
 class EngineBridge(QObject):
@@ -52,7 +63,7 @@ class CaptureGuard(QObject):
 
     def eventFilter(self, obj: QObject, ev: QEvent) -> bool:
         if ev.type() == QEvent.Type.Show and isinstance(obj, QWidget) and obj.isWindow():
-            if _is_windows_platform():
+            if _is_native_platform():
                 stealth.exclude_from_capture(int(obj.winId()))
         return False
 
@@ -88,7 +99,7 @@ class Overlay(QWidget):
         self.post = post
         self.rec: Any = None
         self._save_fn = save_settings or config.save
-        self._open_fn = opener or os.startfile
+        self._open_fn = opener or open_path
         self._startup_folder = startup_folder
 
         self._recording = False
@@ -225,11 +236,13 @@ class Overlay(QWidget):
         self._menu.addMenu(self._prev_menu)
         self._menu.addSeparator()
         self._polish_action = self._menu.addAction("Polish transcript", self.polish)
-        self._startup_action = self._menu.addAction("Start with Windows")
+        self._startup_action = self._menu.addAction(startup.label())
         self._startup_action.setCheckable(True)
         self._startup_action.triggered.connect(self.set_start_with_windows)
         self._menu.addSeparator()
         hk = (self.cfg.get("hotkey_toggle") or "ctrl+alt+m").title()
+        if sys.platform == "darwin":
+            hk = hk.replace("Alt", "Option").replace("Win", "Cmd")
         self._menu.addAction(f"Hide	{hk}", self.hide)
         self._menu.addAction("Quit Minutes", self.quit_app)
         self._menu.aboutToShow.connect(self._refresh_menu)
@@ -344,7 +357,7 @@ class Overlay(QWidget):
 
     # ----------------------------------------------------------------- native
     def _apply_native(self) -> None:
-        if not _is_windows_platform():
+        if not _is_native_platform():
             return
         hwnd = int(self.winId())
         # Collapsed pill never takes focus; the expanded panel may, so text can be selected.

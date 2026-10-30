@@ -110,3 +110,13 @@ def apply(hwnd: int, no_activate: bool | None = None) -> dict[str, bool]:
     if no_activate is not None:
         status["no_activate"] = set_no_activate(hwnd, no_activate)
     return status
+
+
+def prepare_app() -> None:
+    """App-wide setup. Nothing to do on Windows; the Mac version hides the Dock icon."""
+
+
+if sys.platform == "darwin":
+    from .stealth_mac import (  # noqa: F401,F811
+        apply, available, exclude_from_capture, hide_from_shell, prepare_app,
+    )

@@ -1,6 +1,6 @@
 # Minutes
 
-A small meeting transcriber for Windows that runs entirely on your own computer.
+A small meeting transcriber for Windows and macOS that runs entirely on your own computer.
 
 It listens to two things at once: your microphone ("Me") and whatever your computer is
 playing ("Them", meaning everyone else on the Zoom, Meet or Teams call). It writes a live
@@ -21,6 +21,29 @@ The first launch downloads the speech model (about 1.6 GB, once). The status lin
 "Loading speech model..." until it is ready. After that, starting takes a few seconds.
 
 If it is already running, launching it again just brings the existing window back.
+
+## On a Mac
+
+Needs macOS 13 (Ventura) or newer and Python 3.10+ (`brew install python@3.12`).
+
+1. In Terminal, from this folder, run `bash mac/install.sh`. It sets up a private Python
+   environment and downloads the speech model (about 1.6 GB, once).
+2. Double-click `mac/Minutes.command` to start Minutes. The Terminal window can be closed.
+3. The first time, macOS asks for **Microphone** and **Screen & System Audio Recording**
+   access. Allow both, quit Minutes (... menu > Quit) and start it again. The call audio
+   ("Them") comes from screen recording permission; Minutes only keeps the audio, never
+   the picture.
+
+Differences from Windows:
+
+- The hotkey is **Ctrl+Option+M**.
+- "Start with Windows" is called **Open at login**.
+- Minutes has no Dock icon and is not in Cmd-Tab.
+- Hiding from screen share works for screenshots, QuickTime and most apps, but on macOS 15
+  and newer some screen sharing tools ignore it. Check with a test share before relying
+  on it.
+- Prefer BlackHole for call audio? Set `speaker_device` to its name (for example
+  `"BlackHole 2ch"`) in settings.json and Minutes records it as the "Them" side.
 
 ## Using it
 
@@ -86,7 +109,8 @@ Each line in the transcript looks like `[00:12:31] Them: Let's push the launch a
 
 ## Settings
 
-Edit `C:\Users\ericc\Minutes\settings.json` (create it if it is missing) and restart
+Edit `C:\Users\ericc\Minutes\settings.json` (on a Mac, `~/Minutes/settings.json`; create it
+if it is missing) and restart
 Minutes. Only add the keys you want to change, for example:
 
 ```json
@@ -104,7 +128,7 @@ Minutes. Only add the keys you want to change, for example:
 |---|---|
 | `language` | Spoken language, e.g. `"en"`, `"es"`, `"de"`. |
 | `whisper_model` | Speech model. `"large-v3-turbo"` (default, best). `"distil-large-v3"` is faster but English only. |
-| `cpu_threads` | CPU threads for transcription (default 8). |
+| `cpu_threads` | CPU threads for transcription (default: 8, or fewer on machines with fewer cores). |
 | `keep_audio_days` | Days to keep audio WAVs before deleting them. |
 | `meeting_gap_minutes` | Minutes of silence before a meeting is closed automatically. |
 | `record_on_launch` | Start recording as soon as Minutes opens. |
@@ -123,6 +147,11 @@ follow the new device.
 **Nothing shows up for "Me".** Check the default input device in Windows sound settings
 and that Python is allowed to use the microphone (Settings > Privacy & security >
 Microphone).
+
+**Mac: nothing shows up for "Them", or a permission error.** Open System Settings >
+Privacy & Security > Screen & System Audio Recording and make sure Terminal (or Python,
+if you use Open at login) is allowed, then restart Minutes. Do the same under Microphone
+if "Me" is empty.
 
 **Summarize fails.** Summaries need Ollama. Minutes tries to start it for you; if that
 does not work, open the Ollama app (or run `ollama serve`) and try again. If it says the

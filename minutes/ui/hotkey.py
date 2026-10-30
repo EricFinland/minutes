@@ -116,3 +116,7 @@ class GlobalHotkey:
                         log.exception("hotkey handler failed")
         finally:
             user32.UnregisterHotKey(None, self.HOTKEY_ID)
+
+
+if sys.platform == "darwin":
+    from .hotkey_mac import GlobalHotkey  # noqa: F401,F811

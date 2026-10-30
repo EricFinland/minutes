@@ -1,4 +1,5 @@
 """Audio sources: microphone, system audio (WASAPI loopback) and WAV replay for tests.
+The macOS system audio source lives in audio_mac.py.
 
 Every source delivers 16 kHz mono float32 chunks through `on_audio(samples, t)` where `t`
 is `time.monotonic()` when the chunk finished (None for sources that are not real time).
@@ -8,6 +9,7 @@ source died and should be reopened by the caller.
 from __future__ import annotations
 
 import ctypes
+import sys
 import threading
 import time
 import wave
@@ -272,4 +274,12 @@ def read_wav(path: Path) -> np.ndarray:
 
 def default_sources(cfg: dict) -> dict[str, Callable[[], AudioSource]]:
     from minutes.models import ME, THEM
+    if sys.platform == "darwin":
+        if cfg.get("speaker_device"):
+            # A virtual input such as BlackHole carries the call audio as a normal input.
+            them = lambda: MicSource({"mic_device": cfg["speaker_device"]})
+        else:
+            from .audio_mac import ScreenCaptureAudioSource
+            them = lambda: ScreenCaptureAudioSource(cfg)
+        return {ME: lambda: MicSource(cfg), THEM: them}
     return {ME: lambda: MicSource(cfg), THEM: lambda: LoopbackSource(cfg)}

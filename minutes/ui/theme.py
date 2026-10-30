@@ -18,7 +18,8 @@ OK = "#7FCB9A"
 
 LEVEL_COLORS = {"info": MUTED, "warn": WARN, "error": ERROR, "ok": OK}
 
-FONT_FAMILIES = ["Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI"]
+FONT_FAMILIES = ["Segoe UI Variable Text", "Segoe UI Variable", "Segoe UI",
+                 ".AppleSystemUIFont", "Helvetica Neue"]
 
 
 def font(pixel_size: int = 12, weight: QFont.Weight = QFont.Weight.Normal) -> QFont:
@@ -33,7 +34,7 @@ def font(pixel_size: int = 12, weight: QFont.Weight = QFont.Weight.Normal) -> QF
 STYLESHEET = f"""
 QWidget {{
     color: {TEXT};
-    font-family: "Segoe UI Variable Text", "Segoe UI";
+    font-family: "Segoe UI Variable Text", "Segoe UI", ".AppleSystemUIFont", "Helvetica Neue";
     font-size: 12px;
 }}
 QLabel#time {{ font-size: 12px; font-weight: 600; }}

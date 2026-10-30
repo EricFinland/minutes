@@ -100,7 +100,7 @@ def main(argv: list[str] | None = None) -> int:
     from PyQt6.QtWidgets import QApplication
 
     from minutes import config
-    from minutes.ui import EngineBridge, Overlay, install_capture_guard
+    from minutes.ui import EngineBridge, Overlay, install_capture_guard, stealth
     from minutes.ui.single_instance import SingleInstance, instance_key
 
     cfg = config.load()
@@ -109,6 +109,7 @@ def main(argv: list[str] | None = None) -> int:
     app = QApplication(sys.argv[:1])
     app.setApplicationName("Minutes")
     app.setQuitOnLastWindowClosed(False)
+    stealth.prepare_app()  # macOS: no Dock icon or Cmd-Tab entry
 
     instance = SingleInstance(instance_key(config.data_dir()))
     if not instance.acquire():

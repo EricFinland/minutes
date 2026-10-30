@@ -30,8 +30,21 @@ def _rotate_log() -> None:
         pass
 
 
+def _main_posix() -> None:
+    """macOS: start app.py detached so the Terminal window that ran this can close."""
+    env = os.environ.copy()
+    env["PYTHONUNBUFFERED"] = "1"
+    with open(LOG, "a", encoding="utf-8") as log:
+        subprocess.Popen([sys.executable, APP, *sys.argv[1:]], cwd=HERE,
+                         stdin=subprocess.DEVNULL, stdout=log, stderr=subprocess.STDOUT,
+                         env=env, start_new_session=True)
+
+
 def main() -> None:
     _rotate_log()
+    if sys.platform != "win32":
+        _main_posix()
+        return
     # STARTF_USESHOWWINDOW + SW_HIDE: python.exe still owns a real console (valid fd
     # 0/1/2 handles), it is just never shown.
     si = subprocess.STARTUPINFO()

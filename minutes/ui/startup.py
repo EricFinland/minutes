@@ -1,12 +1,27 @@
-"""Start with Windows: a shortcut to `pythonw.exe run.pyw` in the user's Startup folder."""
+"""Start at login.
+
+Windows: a shortcut to `pythonw.exe run.pyw` in the user's Startup folder.
+macOS: a LaunchAgent plist in ~/Library/LaunchAgents that runs app.py at login.
+"""
 from __future__ import annotations
 
 import os
+import plistlib
 import sys
 from pathlib import Path
 from typing import Optional
 
 SHORTCUT_NAME = "Minutes.lnk"
+LAUNCH_AGENT_LABEL = "com.minutes.recorder"
+LAUNCH_AGENT_NAME = LAUNCH_AGENT_LABEL + ".plist"
+
+
+def label() -> str:
+    return "Open at login" if sys.platform == "darwin" else "Start with Windows"
+
+
+def _entry_name() -> str:
+    return LAUNCH_AGENT_NAME if sys.platform == "darwin" else SHORTCUT_NAME
 
 
 def project_root() -> Path:
@@ -24,6 +39,8 @@ def pythonw_path() -> Path:
 
 
 def startup_folder() -> Path:
+    if sys.platform == "darwin":
+        return Path.home() / "Library" / "LaunchAgents"
     appdata = os.environ.get("APPDATA") or str(Path.home() / "AppData" / "Roaming")
     return Path(appdata) / "Microsoft" / "Windows" / "Start Menu" / "Programs" / "Startup"
 
@@ -53,14 +70,39 @@ def read_shortcut(path: Path) -> dict:
     return {"target": sc.TargetPath, "arguments": sc.Arguments, "workdir": sc.WorkingDirectory}
 
 
+def write_launch_agent(folder: Path, python: Optional[str] = None,
+                       log_path: Optional[Path] = None) -> Path:
+    """Write the macOS LaunchAgent that starts Minutes at login."""
+    from minutes import config
+
+    folder = Path(folder)
+    folder.mkdir(parents=True, exist_ok=True)
+    log_file = str(log_path or config.data_dir() / "minutes.log")
+    agent = {
+        "Label": LAUNCH_AGENT_LABEL,
+        "ProgramArguments": [python or sys.executable, str(project_root() / "app.py")],
+        "WorkingDirectory": str(project_root()),
+        "RunAtLoad": True,
+        "ProcessType": "Interactive",
+        "StandardOutPath": log_file,
+        "StandardErrorPath": log_file,
+    }
+    path = folder / LAUNCH_AGENT_NAME
+    with open(path, "wb") as f:
+        plistlib.dump(agent, f)
+    return path
+
+
 def is_enabled(folder: Optional[Path] = None) -> bool:
-    return (Path(folder or startup_folder()) / SHORTCUT_NAME).exists()
+    return (Path(folder or startup_folder()) / _entry_name()).exists()
 
 
 def set_enabled(enabled: bool, folder: Optional[Path] = None) -> bool:
     folder = Path(folder or startup_folder())
-    path = folder / SHORTCUT_NAME
-    if enabled:
+    path = folder / _entry_name()
+    if enabled and sys.platform == "darwin":
+        write_launch_agent(folder)
+    elif enabled:
         create_shortcut(folder)
     else:
         try:

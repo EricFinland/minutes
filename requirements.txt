@@ -2,8 +2,16 @@ faster-whisper>=1.2.1
 numpy>=2.0
 onnxruntime>=1.17
 sounddevice>=0.5
-SoundCard>=0.4.6
 PyQt6>=6.6
 requests>=2.31
-pywin32>=306
 psutil>=5.9
+
+# Windows: system audio loopback and window/shell APIs
+SoundCard>=0.4.6; sys_platform == "win32"
+pywin32>=306; sys_platform == "win32"
+
+# macOS 13+: system audio through ScreenCaptureKit, window and Dock APIs
+pyobjc-framework-ScreenCaptureKit>=10.0; sys_platform == "darwin"
+pyobjc-framework-CoreMedia>=10.0; sys_platform == "darwin"
+pyobjc-framework-Cocoa>=10.0; sys_platform == "darwin"
+pyobjc-framework-libdispatch>=10.0; sys_platform == "darwin"

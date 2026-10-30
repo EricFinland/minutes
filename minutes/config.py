@@ -9,7 +9,8 @@ DEFAULTS: dict = {
     # Speech to text
     "whisper_model": "large-v3-turbo",   # fallback: "distil-large-v3" (faster, English only)
     "language": "en",
-    "cpu_threads": 8,
+    # 8 on a big Windows laptop; leaves a couple of cores for Zoom on smaller Macs.
+    "cpu_threads": max(2, min(8, (os.cpu_count() or 4) - 2)),
     "beam_size": 5,
     # Voice activity detection
     "vad_threshold": 0.35,
